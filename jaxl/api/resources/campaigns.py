@@ -212,8 +212,8 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         help="Greeting or Prompt template to use",
     )
     campaign_create_parser.add_argument(
-        "--phone_numbers",
-        type=_unique_comma_separated,
+        "--phone-numbers",
+        type=str,
         required=False,
         help="Give number to use creating calls. Use comma-separated for multiple number use",
     )
@@ -255,6 +255,7 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
             "end_time",
             "timezone",
             "template",
+            "phone_numbers",
         ],
     )
 
