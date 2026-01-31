@@ -37,6 +37,18 @@ from jaxl.api.resources.orgs import first_org_id
 from jaxl.api.resources.payments import payments_get_total_recharge
 
 
+def _unique_comma_separated(value: str) -> list[str]:
+    items = [v.strip() for v in value.split(",") if v.strip()]
+    seen = set()
+    unique_items = []
+    for item in items:
+        if item in seen:
+            raise argparse.ArgumentTypeError(f"Duplicate recipient: '{item}'")
+        seen.add(item)
+        unique_items.append(item)
+    return unique_items
+
+
 def campaigns_create(args: Dict[str, Any]) -> Response[Campaign]:
     currency = 2
     total_recharge = payments_get_total_recharge({"currency": currency})
@@ -115,6 +127,7 @@ def campaigns_create(args: Dict[str, Any]) -> Response[Campaign]:
             auto_retry=args["auto_retry"],
             cc=args["country_code"],
             options=CampaignUploadRequestOptions(),
+            phone_numbers=args["phone_numbers"],
         ),
     )
 
@@ -197,6 +210,12 @@ def _subparser(parser: argparse.ArgumentParser) -> None:
         type=str,
         required=True,
         help="Greeting or Prompt template to use",
+    )
+    campaign_create_parser.add_argument(
+        "--phone_numbers",
+        type=_unique_comma_separated,
+        required=False,
+        help="Give number to use creating calls. Use comma-separated for multiple number use",
     )
     group = campaign_create_parser.add_mutually_exclusive_group(required=True)
     group.add_argument(

@@ -10,7 +10,18 @@ with or without modification, is strictly prohibited.
 import datetime
 import json
 from io import BytesIO
-from typing import TYPE_CHECKING, Any, Dict, List, Tuple, Type, TypeVar, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    Optional,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+    cast,
+)
 
 import attr
 from dateutil.parser import isoparse
@@ -19,11 +30,8 @@ from ..models.campaign_upload_type_enum import CampaignUploadTypeEnum
 from ..models.content_type_enum import ContentTypeEnum
 from ..types import UNSET, File, Unset
 
-
 if TYPE_CHECKING:
-    from ..models.campaign_upload_request_options import (
-        CampaignUploadRequestOptions,
-    )
+    from ..models.campaign_upload_request_options import CampaignUploadRequestOptions
     from ..models.campaign_window_request import CampaignWindowRequest
 
 
@@ -46,6 +54,7 @@ class CampaignUploadRequest:
         auto_retry (Union[Unset, bool]):
         cc (Union[Unset, None, str]):
         options (Union[Unset, None, CampaignUploadRequestOptions]):
+        phone_numbers (Union[Unset, None, List[Optional[str]]]):
     """
 
     specification: File
@@ -60,6 +69,7 @@ class CampaignUploadRequest:
     auto_retry: Union[Unset, bool] = False
     cc: Union[Unset, None, str] = UNSET
     options: Union[Unset, None, "CampaignUploadRequestOptions"] = UNSET
+    phone_numbers: Union[Unset, None, List[Optional[str]]] = UNSET
     additional_properties: Dict[str, Any] = attr.ib(init=False, factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
@@ -87,6 +97,13 @@ class CampaignUploadRequest:
         if not isinstance(self.options, Unset):
             options = self.options.to_dict() if self.options else None
 
+        phone_numbers: Union[Unset, None, List[Optional[str]]] = UNSET
+        if not isinstance(self.phone_numbers, Unset):
+            if self.phone_numbers is None:
+                phone_numbers = None
+            else:
+                phone_numbers = self.phone_numbers
+
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
@@ -113,6 +130,8 @@ class CampaignUploadRequest:
             field_dict["cc"] = cc
         if options is not UNSET:
             field_dict["options"] = options
+        if phone_numbers is not UNSET:
+            field_dict["phone_numbers"] = phone_numbers
 
         return field_dict
 
@@ -152,7 +171,7 @@ class CampaignUploadRequest:
             window = (
                 (None, json.dumps(self.window.to_dict()).encode(), "application/json")
                 if self.window
-                else window
+                else None
             )
 
         auto_retry = (
@@ -170,8 +189,20 @@ class CampaignUploadRequest:
             options = (
                 (None, json.dumps(self.options.to_dict()).encode(), "application/json")
                 if self.options
-                else options
+                else None
             )
+
+        phone_numbers: Union[Unset, Tuple[None, bytes, str]] = UNSET
+        if not isinstance(self.phone_numbers, Unset):
+            if self.phone_numbers is None:
+                phone_numbers = None
+            else:
+                _temp_phone_numbers = self.phone_numbers
+                phone_numbers = (
+                    None,
+                    json.dumps(_temp_phone_numbers).encode(),
+                    "application/json",
+                )
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(
@@ -204,6 +235,8 @@ class CampaignUploadRequest:
             field_dict["cc"] = cc
         if options is not UNSET:
             field_dict["options"] = options
+        if phone_numbers is not UNSET:
+            field_dict["phone_numbers"] = phone_numbers
 
         return field_dict
 
@@ -260,6 +293,8 @@ class CampaignUploadRequest:
         else:
             options = CampaignUploadRequestOptions.from_dict(_options)
 
+        phone_numbers = cast(List[Optional[str]], d.pop("phone_numbers", UNSET))
+
         campaign_upload_request = cls(
             specification=specification,
             content_type=content_type,
@@ -273,6 +308,7 @@ class CampaignUploadRequest:
             auto_retry=auto_retry,
             cc=cc,
             options=options,
+            phone_numbers=phone_numbers,
         )
 
         campaign_upload_request.additional_properties = d
